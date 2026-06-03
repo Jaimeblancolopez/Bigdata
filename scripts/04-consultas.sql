@@ -1,8 +1,7 @@
 -- ============================================================
--- Paso 4 — Consultas (seleccionar cafenorte_XX en phpMyAdmin)
+-- Paso 4 — Consultas
+-- Tu base cafenorte_XX seleccionada en phpMyAdmin → SQL (sin USE).
 -- ============================================================
-
-USE cafenorte_XX;
 
 SELECT * FROM Clientes;
 

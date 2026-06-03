@@ -1,15 +1,10 @@
 -- ============================================================
--- TALLER COMPLETO — ingenieria.unac.edu.co/phpmyadmin
--- ANTES DE IMPORTAR: sustituye todas las apariciones de XX por tu código.
--- Ejemplo: si tu código es p07 → buscar XX y reemplazar por p07
--- Resultado: base de datos cafenorte_p07
+-- TALLER COMPLETO — Tablas + datos (sin USE)
+-- 1. Sustituye XX por tu código si editas el archivo (ej. p07).
+-- 2. En phpMyAdmin: clic en tu base cafenorte_XX (panel izquierdo).
+-- 3. Importar → elegir este archivo → Continuar.
+-- El facilitador ya creó la base; este script solo crea tablas e inserta datos.
 -- ============================================================
-
-CREATE DATABASE IF NOT EXISTS cafenorte_XX
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE cafenorte_XX;
 
 CREATE TABLE Clientes (
     ClienteID      INT AUTO_INCREMENT PRIMARY KEY,

@@ -1,8 +1,7 @@
 -- ============================================================
--- Paso 5 — Agregación y fechas (cafenorte_XX)
+-- Paso 5 — Agregación y fechas
+-- Tu base cafenorte_XX seleccionada en phpMyAdmin → SQL (sin USE).
 -- ============================================================
-
-USE cafenorte_XX;
 
 SELECT
     COUNT(*)           AS TotalProductos,

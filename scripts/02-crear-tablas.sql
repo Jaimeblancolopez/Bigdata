@@ -1,9 +1,7 @@
 -- ============================================================
--- Paso 2 — Crear tablas (phpMyAdmin → seleccionar cafenorte_XX → SQL)
--- Cambia XX por tu código en la línea USE si hace falta.
+-- Paso 2 — Crear tablas
+-- Selecciona tu base cafenorte_XX en phpMyAdmin → pestaña SQL → pegar (sin USE).
 -- ============================================================
-
-USE cafenorte_XX;
 
 CREATE TABLE Clientes (
     ClienteID      INT AUTO_INCREMENT PRIMARY KEY,

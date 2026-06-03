@@ -1,8 +1,7 @@
 -- ============================================================
--- Paso 3 — Datos de ejemplo (cafenorte_XX → SQL)
+-- Paso 3 — Datos de ejemplo
+-- Tu base cafenorte_XX seleccionada en phpMyAdmin → SQL (sin USE).
 -- ============================================================
-
-USE cafenorte_XX;
 
 INSERT INTO Clientes (Nombre, Telefono, Email) VALUES
 ('Ana García',    '3001112233', 'ana@email.com'),
