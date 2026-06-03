@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taller: Bases de datos con IA — 45 min</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface2: #243044;
+      --accent: #3b82f6;
+      --accent2: #10b981;
+      --text: #e8edf4;
+      --muted: #94a3b8;
+      --border: #334155;
+      --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f1419 60%);
+      padding: 2.5rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+    header p { color: var(--muted); max-width: 42rem; }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+    nav a:hover { color: var(--accent); }
+    main { max-width: 52rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    section { margin-bottom: 3rem; }
+    h2 {
+      font-size: 1.35rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    h3 { font-size: 1.05rem; margin: 1.25rem 0 0.5rem; color: var(--accent2); }
+    p, li { color: var(--muted); margin-bottom: 0.75rem; }
+    li { margin-left: 1.25rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .timeline { display: flex; flex-direction: column; gap: 0.75rem; }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 4.5rem 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+    .time {
+      background: var(--surface2);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .glossary dt { font-weight: 600; color: var(--text); margin-top: 0.75rem; }
+    .glossary dd { color: var(--muted); margin-left: 0; }
+    .prompt-box {
+      background: #0d1117;
+      border: 1px dashed var(--accent);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: Consolas, monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      margin: 0.75rem 0;
+      position: relative;
+    }
+    .sql-block {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .sql-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: var(--surface2);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .sql-header button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+    .sql-header button:hover { filter: brightness(1.1); }
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: #c9d1d9;
+    }
+    .tip {
+      border-left: 4px solid var(--warning);
+      padding: 0.75rem 1rem;
+      background: rgba(245, 158, 11, 0.08);
+      border-radius: 0 8px 8px 0;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+    .tip strong { color: var(--warning); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 1rem 0;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    th { background: var(--surface2); color: var(--text); }
+    .diagram {
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: var(--surface2);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      color: var(--muted);
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+    .participant-box {
+      background: linear-gradient(135deg, #1e3a5f 0%, var(--surface) 100%);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .participant-box label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+    .participant-box input {
+      width: 100%;
+      max-width: 14rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .db-preview {
+      margin-top: 0.75rem;
+      font-family: Consolas, monospace;
+      color: var(--accent2);
+      font-size: 0.95rem;
+    }
+    @media (max-width: 600px) {
+      .timeline-item { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">45 minutos · Principiantes · Con IA</span>
+    <h1>Bases de datos con inteligencia artificial</h1>
+    <p>Taller práctico para principiantes. Servidor <strong>ingenieria.unac.edu.co</strong>: cada participante trabaja en <strong>su propia base</strong> (<code>cafenorte_tu_codigo</code>) desde phpMyAdmin — con ayuda de la IA.</p>
+    <p style="margin-top:0.75rem">
+      <a href="https://ingenieria.unac.edu.co/phpmyadmin" style="color:#93c5fd;font-weight:600" target="_blank" rel="noopener">https://ingenieria.unac.edu.co/phpmyadmin</a>
+    </p>
+  </header>
+
+  <nav>
+    <a href="#agenda">Agenda</a>
+    <a href="#phpmyadmin">Servidor compartido</a>
+    <a href="#conceptos">Conceptos</a>
+    <a href="#ia">Usar IA</a>
+    <a href="#scripts">Scripts SQL</a>
+    <a href="#ejercicio">Ejercicio</a>
+    <a href="#referencias">Referencias</a>
+  </nav>
+
+  <main>
+    <section id="agenda">
+      <h2>Agenda del taller (45 min)</h2>
+      <div class="card timeline">
+        <div class="timeline-item">
+          <span class="time">0–5 min</span>
+          <div>
+            <strong>¿Qué es una base de datos?</strong>
+            <p>Analogía del “archivador digital”, SGBD y por qué importan en cualquier negocio.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="time">5–12 min</span>
+          <div>
+            <strong>Tablas, filas y columnas</strong>
+            <p>Entidades, atributos y relaciones (1:N) con el ejemplo Café Norte.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="time">12–18 min</span>
+          <div>
+            <strong>Cómo pedirle ayuda a la IA</strong>
+            <p>Prompts efectivos para generar y corregir SQL sin saber programar.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="time">18–30 min</span>
+          <div>
+            <strong>Demostración en phpMyAdmin</strong>
+            <p>Cada uno importa o ejecuta scripts en <strong>su</strong> base <code>cafenorte_XX</code>.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="time">30–40 min</span>
+          <div>
+            <strong>Consultas con SELECT</strong>
+            <p>Ejecutar consultas y usar la IA para preguntas en lenguaje natural.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <span class="time">40–45 min</span>
+          <div>
+            <strong>Cierre y preguntas</strong>
+            <p>Resumen CRUD, recursos adicionales y tarea opcional.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="phpmyadmin">
+      <h2>Servidor compartido + tu base de datos</h2>
+      <p>MySQL y phpMyAdmin están en <strong>ingenieria.unac.edu.co</strong>. Todos usan la misma dirección; cada quien trabaja <strong>solo en su base</strong>, sin mezclar datos con otros participantes.</p>
+
+      <div class="participant-box">
+        <label for="codigo-participante">Tu código de participante</label>
+        <input type="text" id="codigo-participante" placeholder="ej. p07 o garcia" maxlength="20" autocomplete="off">
+        <p class="db-preview">Tu base de datos: <strong id="nombre-base-preview">cafenorte_XX</strong></p>
+        <p style="font-size:0.85rem; margin-top:0.5rem; margin-bottom:0">Al copiar scripts desde esta página, <code>XX</code> se sustituye por tu código. Usa solo letras minúsculas y números.</p>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th>Concepto</th><th>Ejemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Código que te asignan</td><td><code>p07</code></td></tr>
+            <tr><td>Nombre de tu base</td><td><code>cafenorte_p07</code></td></tr>
+            <tr><td>Base de otra persona</td><td><code>cafenorte_p08</code> — no tocar</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Paso 1 — Entrar a phpMyAdmin</h3>
+      <ol>
+        <li>Abrir <a href="https://ingenieria.unac.edu.co/phpmyadmin" style="color:var(--accent)" target="_blank" rel="noopener"><strong>https://ingenieria.unac.edu.co/phpmyadmin</strong></a></li>
+        <li>Iniciar sesión con el usuario y contraseña de tu lista de participante.</li>
+      </ol>
+
+      <h3>Paso 2 — Crear tu taller</h3>
+      <p><strong>Opción A (web):</strong> escribe tu código arriba → copia los scripts con <strong>Copiar</strong> → pégalo en phpMyAdmin → pestaña <strong>SQL</strong> (01, luego 02, 03…).</p>
+      <p><strong>Opción B (importar archivo):</strong> abre <code>taller-completo.sql</code>, reemplaza todas las <code>XX</code> por tu código, guarda e <strong>Importar</strong> en phpMyAdmin.</p>
+
+      <div class="tip">
+        <strong>Importante:</strong> En el panel izquierdo debe estar seleccionada <strong>tu</strong> base (<code>cafenorte_tucodigo</code>) antes de pegar los scripts 02–05. No uses la base de un compañero.
+      </div>
+
+      <h3>Paso 3 — Explorar tus datos</h3>
+      <ol>
+        <li>Clic en <strong>cafenorte_tucodigo</strong> → tabla <strong>Clientes</strong> → <strong>Examinar</strong>.</li>
+      </ol>
+
+      <h3>Paso 4 — Consultas y respaldo</h3>
+      <ol>
+        <li>Con tu base seleccionada → <strong>SQL</strong> → pegar consultas del script 04 o 05.</li>
+        <li><strong>Exportar</strong> solo tu base para guardar tu trabajo.</li>
+      </ol>
+
+      <p style="margin-top:1rem">Facilitador: <code>GUIA-SERVIDOR-COMPARTIDO.md</code> · Participantes: <code>GUIA-PHPMYADMIN.md</code></p>
+    </section>
+
+    <section id="conceptos">
+      <h2>Conceptos básicos (sin tecnicismos)</h2>
+      <dl class="glossary card">
+        <dt>Base de datos</dt>
+        <dd>Colección organizada de información que evita duplicados y permite consultarla desde varias aplicaciones.</dd>
+        <dt>SGBD / DBMS</dt>
+        <dd>Software que administra los datos (<strong>MySQL</strong> en el servidor del taller). <strong>phpMyAdmin</strong> es la ventana web; cada participante tiene <strong>su propia base</strong> (<code>cafenorte_XX</code>).</dd>
+        <dt>Tabla</dt>
+        <dd>Como una hoja de Excel: filas = registros, columnas = campos (nombre, precio, fecha…).</dd>
+        <dt>Clave primaria</dt>
+        <dd>Identificador único de cada fila (ej. ClienteID = 1, 2, 3…).</dd>
+        <dt>Clave foránea</dt>
+        <dd>Conecta tablas: en Pedidos, ClienteID apunta a un cliente real en la tabla Clientes.</dd>
+        <dt>SQL</dt>
+        <dd>Lenguaje para hablar con la base de datos: crear, leer, actualizar y borrar datos.</dd>
+      </dl>
+
+      <h3>Modelo del ejemplo: Café Norte</h3>
+      <div class="diagram">
+Clientes (1) ──────&lt; (N) Pedidos (1) ──────&lt; (N) DetallePedidos &gt;────── (N) Productos (1)
+
+  ClienteID          PedidoID, ClienteID       ProductoID, Cantidad
+  Nombre, Teléfono   Fecha, Total
+      </div>
+
+      <h3>Sentencias que verás hoy (CRUD + DDL)</h3>
+      <table>
+        <thead>
+          <tr><th>Sentencia</th><th>Para qué sirve</th><th>Ejemplo rápido</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>CREATE</td><td>Crear BD, tablas</td><td>CREATE TABLE Clientes (...)</td></tr>
+          <tr><td>SELECT</td><td>Consultar / leer</td><td>SELECT * FROM Clientes</td></tr>
+          <tr><td>INSERT</td><td>Agregar datos</td><td>INSERT INTO Productos VALUES (...)</td></tr>
+          <tr><td>UPDATE</td><td>Modificar</td><td>UPDATE Productos SET Precio = 5000 WHERE ...</td></tr>
+          <tr><td>DELETE</td><td>Eliminar filas</td><td>DELETE FROM Pedidos WHERE PedidoID = 3</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="ia">
+      <h2>Usar inteligencia artificial en el taller</h2>
+      <p>Puedes usar ChatGPT, Copilot, Cursor o Gemini. La IA no sustituye entender el resultado: siempre revisa y ejecuta en un entorno de prueba.</p>
+
+      <div class="tip">
+        <strong>Regla de oro:</strong> Describe el negocio en español, pide SQL para <strong>MySQL 8</strong>, y pide que explique cada parte en lenguaje simple.
+      </div>
+
+      <h3>Prompt 1 — Diseñar tablas desde cero</h3>
+      <div class="prompt-box" id="prompt1">Soy principiante en bases de datos. Tengo una cafetería llamada "Café Norte" y necesito guardar clientes, productos y pedidos.
+
+Diseña un modelo con tablas relacionadas (claves primarias y foráneas) y genera el script CREATE TABLE para MySQL 8 (InnoDB, utf8mb4).
+
+Explica cada tabla en una frase simple en español. No uses sintaxis de SQL Server (sin GO, sin IDENTITY).</div>
+      <button type="button" onclick="copyText('prompt1')">Copiar prompt</button>
+
+      <h3>Prompt 2 — Generar datos de prueba</h3>
+      <div class="prompt-box" id="prompt2">Ya tengo estas tablas en MySQL: Clientes, Productos, Pedidos, DetallePedidos (estructura Café Norte).
+
+Genera INSERT con al menos 3 clientes, 4 productos y 3 pedidos con su detalle. Solo MySQL 8, sin explicación larga.</div>
+      <button type="button" onclick="copyText('prompt2')">Copiar prompt</button>
+
+      <h3>Prompt 3 — Consulta en lenguaje natural</h3>
+      <div class="prompt-box" id="prompt3">Tengo en MySQL la base cafenorte_[MI_CODIGO] con tablas Clientes, Productos, Pedidos y DetallePedidos.
+
+Escribe una consulta SQL que responda: "¿Cuáles son los dos productos más vendidos por cantidad total?" Usa LIMIT, no TOP.
+
+Incluye comentarios en español línea por línea.</div>
+      <button type="button" onclick="copyText('prompt3')">Copiar prompt</button>
+
+      <h3>Prompt 4 — Corregir un error</h3>
+      <div class="prompt-box" id="prompt4">Ejecuté este SQL en MySQL (phpMyAdmin) y me dio error. Explica el error en español simple y dame el script corregido para MySQL 8:
+
+[PEGA AQUÍ TU SCRIPT Y EL MENSAJE ROJO DE PHPMYADMIN]</div>
+      <button type="button" onclick="copyText('prompt4')">Copiar prompt</button>
+
+      <h3>Herramientas del taller</h3>
+      <ul>
+        <li><strong>phpMyAdmin:</strong> <a href="https://ingenieria.unac.edu.co/phpmyadmin" style="color:var(--accent)" target="_blank" rel="noopener">ingenieria.unac.edu.co/phpmyadmin</a></li>
+        <li><strong>Tu código</strong> y base <code>cafenorte_tucodigo</code> (ver cuadro en «Servidor compartido»)</li>
+        <li><strong>IA:</strong> ChatGPT, Copilot o Cursor (para generar y corregir SQL)</li>
+      </ul>
+    </section>
+
+    <section id="scripts">
+      <h2>Scripts SQL del taller</h2>
+      <p>Indica <strong>tu código</strong> en la sección «Servidor compartido» y usa <strong>Copiar</strong>: el SQL llevará tu base <code>cafenorte_tucodigo</code>.</p>
+
+      <div class="card" style="border-color: var(--accent2);">
+        <strong>Importar archivo:</strong> en <code>taller-completo.sql</code> reemplaza <code>XX</code> por tu código en un editor de texto, luego phpMyAdmin → <strong>Importar</strong>.
+      </div>
+
+      <div class="sql-block">
+        <div class="sql-header">
+          <span>01 — Crear tu base de datos</span>
+          <button type="button" onclick="copySql('sql01')">Copiar</button>
+        </div>
+        <pre id="sql01">-- Tu base (XX = tu código al copiar desde la web)
+CREATE DATABASE IF NOT EXISTS cafenorte_XX
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE cafenorte_XX;</pre>
+      </div>
+
+      <div class="sql-block">
+        <div class="sql-header">
+          <span>02 — Crear tablas (Clientes, Productos, Pedidos, DetallePedidos)</span>
+          <button type="button" onclick="copySql('sql02')">Copiar</button>
+        </div>
+        <pre id="sql02">USE cafenorte_XX;
+
+CREATE TABLE Clientes (
+    ClienteID      INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre         VARCHAR(80)  NOT NULL,
+    Telefono       VARCHAR(20),
+    Email          VARCHAR(100),
+    FechaRegistro  DATE DEFAULT (CURDATE())
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE Productos (
+    ProductoID     INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre         VARCHAR(80)  NOT NULL,
+    Precio         DECIMAL(10,2) NOT NULL,
+    Stock          INT NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE Pedidos (
+    PedidoID       INT AUTO_INCREMENT PRIMARY KEY,
+    ClienteID      INT NOT NULL,
+    FechaPedido    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Total          DECIMAL(10,2),
+    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE DetallePedidos (
+    DetalleID      INT AUTO_INCREMENT PRIMARY KEY,
+    PedidoID       INT NOT NULL,
+    ProductoID     INT NOT NULL,
+    Cantidad       INT NOT NULL,
+    PrecioUnitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (PedidoID) REFERENCES Pedidos(PedidoID),
+    FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;</pre>
+      </div>
+
+      <div class="sql-block">
+        <div class="sql-header">
+          <span>03 — Insertar datos de ejemplo</span>
+          <button type="button" onclick="copySql('sql03')">Copiar</button>
+        </div>
+        <pre id="sql03">USE cafenorte_XX;
+
+INSERT INTO Clientes (Nombre, Telefono, Email) VALUES
+('Ana García', '3001112233', 'ana@email.com'),
+('Luis Martínez', '3004445566', 'luis@email.com');
+
+INSERT INTO Productos (Nombre, Precio, Stock) VALUES
+('Café americano', 4500, 100),
+('Capuchino', 6500, 80);
+
+INSERT INTO Pedidos (ClienteID, Total) VALUES (1, 11000), (2, 6500);</pre>
+      </div>
+
+      <div class="sql-block">
+        <div class="sql-header">
+          <span>04 — Consultas SELECT, JOIN, WHERE, LIKE, BETWEEN</span>
+          <button type="button" onclick="copySql('sql04')">Copiar</button>
+        </div>
+        <pre id="sql04">-- Todos los clientes
+SELECT * FROM Clientes;
+
+-- Productos caros
+SELECT Nombre, Precio FROM Productos
+WHERE Precio > 4000 ORDER BY Precio DESC;
+
+-- Pedidos con nombre del cliente
+SELECT p.PedidoID, c.Nombre, p.Total
+FROM Pedidos p
+INNER JOIN Clientes c ON p.ClienteID = c.ClienteID;</pre>
+      </div>
+
+      <div class="sql-block">
+        <div class="sql-header">
+          <span>05 — MAX, MIN, AVG, COUNT, fechas, GROUP BY</span>
+          <button type="button" onclick="copySql('sql05')">Copiar</button>
+        </div>
+        <pre id="sql05">SELECT
+    COUNT(*) AS TotalProductos,
+    MAX(Precio) AS PrecioMaximo,
+    AVG(Precio) AS PrecioPromedio
+FROM Productos;
+
+SELECT NOW() AS Ahora, YEAR(CURDATE()) AS Anio;
+
+SELECT Nombre, Precio FROM Productos
+ORDER BY Precio DESC LIMIT 2;
+
+SELECT c.Nombre, COUNT(p.PedidoID) AS Pedidos
+FROM Clientes c
+LEFT JOIN Pedidos p ON c.ClienteID = p.ClienteID
+GROUP BY c.Nombre;</pre>
+      </div>
+    </section>
+
+    <section id="ejercicio">
+      <h2>Ejercicio guiado (para el facilitador)</h2>
+      <div class="card">
+        <ol>
+          <li>Facilitador: repartir códigos (p01, p02…) y credenciales de ingenieria.unac.edu.co.</li>
+          <li>Cada uno crea <code>cafenorte_sucodigo</code> con script 01 o importando <code>taller-completo.sql</code>.</li>
+          <li>Proyectar <strong>Examinar</strong> en Clientes y un <strong>SELECT</strong> en la base de demo del facilitador.</li>
+          <li>Participante lee un prompt; se pega SQL de la IA en phpMyAdmin y se compara con script 02.</li>
+          <li>Reto (10 min): Prompt 3 → ejecutar consulta → captura de pantalla del resultado.</li>
+        </ol>
+      </div>
+
+      <h3>Tarea opcional</h3>
+      <ul>
+        <li>Mapa conceptual: ¿Qué es BD, DBMS, DBA, MySQL?</li>
+        <li>Documento con capturas de phpMyAdmin (SQL ejecutado + resultados + Exportar).</li>
+        <li>Investigar funciones de fecha y agregación; practicar con el script 05.</li>
+      </ul>
+    </section>
+
+    <section id="referencias">
+      <h2>Referencias y documentación</h2>
+      <ul>
+        <li>MySQL — Crear tablas: <a href="https://dev.mysql.com/doc/refman/8.0/en/create-table.html" style="color:var(--accent)">Documentación</a></li>
+        <li>MySQL — Tutorial SELECT: <a href="https://dev.mysql.com/doc/refman/8.0/en/select.html" style="color:var(--accent)">SELECT</a></li>
+        <li>Funciones de fecha: <a href="https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html" style="color:var(--accent)">Fechas</a></li>
+        <li>Documentación phpMyAdmin: <a href="https://docs.phpmyadmin.net/es/latest/" style="color:var(--accent)">docs.phpmyadmin.net</a></li>
+      </ul>
+
+      <div class="tip" style="margin-top:1rem">
+        <strong>Facilitador:</strong> <code>GUIA-SERVIDOR-COMPARTIDO.md</code>, <code>facilitador-crear-bases.sql</code>, <code>facilitador-usuarios-opcional.sql</code>.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Taller Bases de Datos + IA · ingenieria.unac.edu.co · Una base por participante
+  </footer>
+
+  <script>
+    const DB_PREFIX = 'cafenorte_';
+
+    function normalizeCode(raw) {
+      let c = (raw || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+      return c || 'XX';
+    }
+
+    function getDbName() {
+      return DB_PREFIX + normalizeCode(document.getElementById('codigo-participante')?.value);
+    }
+
+    function personalizeSql(text) {
+      const code = normalizeCode(document.getElementById('codigo-participante')?.value);
+      return text.replace(/cafenorte_XX/gi, DB_PREFIX + code);
+    }
+
+    function updateDbPreview() {
+      const el = document.getElementById('nombre-base-preview');
+      if (el) el.textContent = getDbName();
+    }
+
+    document.getElementById('codigo-participante')?.addEventListener('input', updateDbPreview);
+
+    function copyText(id) {
+      const el = document.getElementById(id);
+      let text = el.innerText.replace(/\[MI_CODIGO\]/g, normalizeCode(document.getElementById('codigo-participante')?.value));
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Prompt copiado al portapapeles');
+      });
+    }
+
+    function copySql(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(personalizeSql(el.innerText)).then(() => {
+        const btn = el.parentElement.querySelector('button');
+        const orig = btn.textContent;
+        btn.textContent = '¡Copiado! (' + getDbName() + ')';
+        setTimeout(() => { btn.textContent = orig; }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
